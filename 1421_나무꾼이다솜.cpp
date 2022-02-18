@@ -30,6 +30,7 @@ int main() {
 				}
 			}
 		}
+	//long long s = (long long)a*b +(-) (long long)c*d 
 		sum = (long long)k * i * w - (long long)c_cnt * c;
 		if (max_sum < sum)max_sum = sum;
 
