@@ -4,21 +4,22 @@
 using namespace std;
 
 int N, final;
-//int cnt = 0;
 vector<int> seq;
 bool sucess = false;
+
 void makeSeq();
 int makefinal(); 
+
 int main() {
 
-
 	cin >> N >> final;
-	
+
 	makeSeq();
 
-	for (int i = 0; i < N; i++) {
-		cout << seq[i] << " ";
+	for (int k = 0; k < N; k++) {
+		cout << seq[k] << " ";
 	}
+
 	return 0;
 }
 void makeSeq() {
@@ -28,23 +29,26 @@ void makeSeq() {
 			seq.push_back(i);
 			if (seq.size() != N) {
 				makeSeq();
-				seq.pop_back();
+				if (!sucess)seq.pop_back();
 			}
 			else {
-				if (makefinal() == final)sucess = true;
+				if (makefinal() == final) sucess = true;
 				else seq.pop_back();
 			}
 			if (sucess)break;
 		}
-	
 	}
 }
 int makefinal() {
-	int f;
-	f = seq[0] + seq[N - 1];
+	vector<int> v(seq);
 
-	for (int i = 1; i < N - 1; i++) {
-		f += seq[i] * (N - 1) * i;
+	for (int j = 0; j < N - 1; j++) {
+		vector<int> v2;
+		for (int i = 0; i < v.size() - 1; i++) {
+			v2.push_back(v[i] + v[i + 1]);
+		}
+		v.clear();
+		v.swap(v2);
 	}
-	return f;
+	return v[0];
 }
