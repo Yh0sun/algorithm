@@ -11,3 +11,4 @@ int solution(int left, int right) {
         else answer += i;
     }
     return answer;
+}
