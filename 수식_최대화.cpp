@@ -1,59 +1,61 @@
 #include <string>
 #include <vector>
-#include <iostream>
 #include <regex>
+
 using namespace std;
 
-string cal(int n1, int n2, char c) {
+vector<string> op = {
+       {"-+*"},
+       {"-*+"},
+       {"+-*"},
+       {"+*-"},
+       {"*-+"},
+       {"*+-"},
+};
+
+string cal(string str,char c) {
+
+    string num[3];
+    regex rr(R"((\(?-?\d{1,}\)?)[-\+\*](\(?-?\d{1,}\)?))");
+    smatch sm;
+
+    if (regex_match(str, sm, rr)) { 
+        for (int i = 1; i < sm.size(); i++) {           
+            num[i] = sm[i].str();
+            if (num[i].find("(") != string::npos) {
+                num[i] = num[i].substr(1, num[i].size() - 2);
+            }
+        }
+    }
+
     switch (c) {
     case '-':
-        return "(" + to_string(n1 - n2) + ")";
+        return "(" + to_string(stoll(num[1]) - stoll(num[2])) + ")";
     case '+':
-        return "(" + to_string(n1 + n2) + ")";
+        return "(" + to_string(stoll(num[1]) + stoll(num[2])) + ")";
     case '*':
-        return "(" + to_string(n1 * n2) + ")";
+        return "(" + to_string(stoll(num[1]) * stoll(num[2])) + ")";
     default:
         break;
     }
 };
-int main() {
-    long long answer = 0;
-    string expression = "100-200*300-500+20";
 
-    string s = "(\(-)?\(?\d{1,3}\)?";
-    vector<string> op = {
-        {"-+*"},
-        {"-*+"},
-        {"+-*"},
-        {"+*-"},
-        {"*-+"},
-        {"*+-"},
-    };
-    cout << "ok1";
+long long solution(string expression) {
+    long long answer = 0;
+     string s = "(\\(-)?\\(?\\d{1,}\\)?";
+
     for (int i = 0; i < 6; i++) {
         string exp(expression);
         for (int j = 0; j < 3; j++) { 
-            cout << "ok2";
-            cout << s + "\\" + op[i][j] + s;
             regex r(s + "\\" + op[i][j] + s);
             smatch m;
-            cout << "ok3";
-            while (regex_match(exp, m, r)) {
-                string str = m.str();
-                cout << m.str() << endl;
-                if (str.front() == '(') {
-                    str.substr(1);
-                    str.substr(0, str.size() - 1);
-                }
-                int num1 = stoi(str.substr(0, str.find(op[i][j])));
-                int num2 = stoi(str.substr(str.find(op[i][j]) + 1));
-                cout << num1 << num2 << cal(num1, num2, op[i][j])<< endl;
-                exp.replace(exp.find(str), str.size(), cal(num1, num2, op[i][j]));
-                cout << "ok";
-            }
+            while (regex_search(exp, m, r)) {
+                exp.replace(exp.find(m.str()), m.str().size(), cal(m.str(),op[i][j]));
+            }           
         }
+        exp = exp.substr(1, exp.size() - 2);
         answer = max(answer, abs(stoll(exp)));
+
     }
-    cout << answer;
-    return 0;
+    return answer;
 }
