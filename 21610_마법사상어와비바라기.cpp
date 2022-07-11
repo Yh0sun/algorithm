@@ -1,36 +1,54 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
+int n, m;
 int sky[51][51];
+
 struct cdn {
 	int x = 0;
 	int y = 0;
 };
-void waterCopyMagic(vector<cdn>& bm, int n) {
-	int x[4] = {-1,-1,1,1};
-	int y[4] = {-1,1,1,-1};
-	
-	for (int i = 0; i < bm.size(); i++) {
+
+void waterCopyMagic(vector<cdn>& n_cld) {
+	int x[4] = { -1,-1,1,1 };
+	int y[4] = { -1,1,1,-1 };
+
+	for (int i = 0; i < n_cld.size(); i++) {
 		int cnt = 0;
 		for (int j = 0; j < 4; j++) {
-			int dgn_x = bm[i].x + x[j];
-			int dgn_y = bm[i].y + y[j];
+			int dgn_x = n_cld[i].x + x[j];
+			int dgn_y = n_cld[i].y + y[j];
 			if (0 <= dgn_x && dgn_x < n && 0 <= dgn_y && dgn_y < n) {
 				if (sky[dgn_x][dgn_y] > 0)cnt++;
 			}
 		}
-		sky[bm[i].x][bm[i].y] += cnt;
+		sky[n_cld[i].x][n_cld[i].y] += cnt;
 	}
 }
-void makeCloud(vector<cdn>& cld, vector<cdn>& bm, int n) {
+void findNextCloud(vector<cdn>& cld, vector<cdn>& n_cld, int d, int s) {
+	int dirX[8] = { 0,-1,-1,-1,0,1,1,1 };
+	int dirY[8] = { -1,-1,0,1,1,1,0,-1 };
+
+	for (int j = 0; j < cld.size(); j++) {
+		int next_x = (cld[j].x + dirX[d - 1] * s) % n;
+		int next_y = (cld[j].y + dirY[d - 1] * s) % n;
+		if (next_x < 0)next_x += n;
+		if (next_y < 0)next_y += n;
+
+		sky[next_x][next_y] += 1;
+
+		n_cld.push_back({ next_x,next_y });
+	}
+}
+void makeCloud(vector<cdn>& cld, vector<cdn>& n_cld) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			if (sky[i][j] > 1) {
 				bool check = true;
-				for (int k = 0; k < bm.size(); k++) {
-					if (i == bm[k].x && j == bm[k].y) {
+				for (int k = 0; k < n_cld.size(); k++) {
+					if (i == n_cld[k].x && j == n_cld[k].y) {
 						check = false;
 						break;
 					}
@@ -43,36 +61,30 @@ void makeCloud(vector<cdn>& cld, vector<cdn>& bm, int n) {
 		}
 	}
 }
+
 int main() {
 
-	int n, m;
-
-
 	cin >> n >> m;
+
+	vector<cdn> cloud = { {n - 1,0},{n - 1,1},{n - 2,0},{n - 2,1} };
+	vector<cdn> nextCloud;
 	
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cin >> sky[i][j];
 		}
 	}
-
-	vector<cdn> cloud = { {n - 1,0},{n - 1,1},{n - 2,0},{n - 2,1}};
-	vector<cdn> beforeMagic;
-	int dirX[8] = { 0,-1,-1,-1,0,1,1,1 };
-	int dirY[8] = { -1,-1,0,1,1,1,0,-1 };
+	
 	for (int i = 0; i < m; i++) {
-		int d = 0;
-		int s = 0;
-		cin >> d >> s;
-		for (int j = 0; j < cloud.size(); j++) {
-			int next_x = (cloud[j].x + dirX[d - 1] * s) % n;
-			int next_y = (cloud[j].y + dirY[d - 1] * s) % n;
-			sky[next_x][next_y] += 1;
-			beforeMagic.push_back({ next_x,next_y });
-		}
+		int dir = 0, distance = 0;
+		cin >> dir >> distance;
+		
+		findNextCloud(cloud, nextCloud, dir, distance);
 		cloud.clear();
-		waterCopyMagic(beforeMagic, n);
-		makeCloud(cloud, beforeMagic, n);
+		waterCopyMagic(nextCloud);
+		makeCloud(cloud, nextCloud);
+		nextCloud.clear();
+
 	}
 
 	int sum = 0;
