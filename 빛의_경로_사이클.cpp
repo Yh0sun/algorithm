@@ -3,7 +3,7 @@
 #include <algorithm>
 
 using namespace std;
-vector<vector<int>> history;
+int history[5][500][500];
 int x_size, y_size;
 
 class mirror {
@@ -66,16 +66,15 @@ vector<int> solution(vector<string> grid) {
     x_size = grid.size();
     y_size = grid[0].size();
     
-    for (int i = 0; i < grid.size(); i++) {
+     for (int i = 0; i < grid.size(); i++) {
         for (int j = 0; j < grid[0].size(); j++) {
            
             for (int k = 1; k < 5; k++) {
                 mirror tmp;
                 int cnt = 0;
-                tmp.set(k, i, j);
                 vector<int> v = { k,i,j };
-                vector<vector<int>> ht;
-                ht.push_back({ k,i,j });
+                tmp.set(k, i, j);
+                history[k][i][j] = 1;
                 int x = i;
                 int y = j;
                 do {
@@ -83,16 +82,16 @@ vector<int> solution(vector<string> grid) {
                     x = tmp.x;
                     y = tmp.y;
                     cnt++;
-                    ht.push_back({ tmp.dir,tmp.x,tmp.y });
-                } while (find(history.begin(), history.end(), tmp.get()) == history.end()&&tmp.get() != v);
-               if (tmp.get() == v) {
+                    history[tmp.dir][tmp.x][tmp.y] ++;
+                } while (history[tmp.dir][tmp.x][tmp.y] < 2&&
+                    tmp.get() != v);
+
+                if (tmp.get() == v) {
                     answer.push_back(cnt);
-                    history.insert(history.end(),ht.begin(),ht.end());
                 }
             }
         }
     }
-
     sort(answer.begin(), answer.end());
 
     return answer;
