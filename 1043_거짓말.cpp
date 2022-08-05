@@ -52,7 +52,6 @@ int main() {
 		}
 	}
 
-	cout << lie << endl;
-
+	cout << lie;
 	return 0;
 }
