@@ -10,8 +10,8 @@ int find(int a) {
 	return parent[a] = find(parent[a]);
 }
 void join(int a, int b) {
-	a = parent[a];
-	b = parent[b];
+	a = find(a);
+	b = find(b);
 
 	if (a == b) {
 		parent[a] = 0;
@@ -23,7 +23,7 @@ void join(int a, int b) {
 
 int main() {
 
-	for (int i = 0;; i++) {
+	for (int i = 1;; i++) {
 
 		int n, m;
 		cin >> n >> m;
@@ -43,11 +43,11 @@ int main() {
 		for (int j = 1; j <= n; j++) {
 			int prt = find(j);
 			if (prt != 0)result.insert(prt);
-		}
+		}	
 
-		if (result.size() == 0) printf("Case %d: No trees.\n", i + 1);
-		else if (result.size() == 1)printf("Case %d: There is one tree.\n", i + 1);
-		else printf("Case %d: A forest of %d trees.\n", i + 1, result.size());
+		if (result.size() == 0) printf("Case %d: No trees.\n", i);
+		else if (result.size() == 1)printf("Case %d: There is one tree.\n", i);
+		else printf("Case %d: A forest of %d trees.\n", i, result.size());
 	}
 	return 0;
 }
