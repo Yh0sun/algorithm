@@ -38,7 +38,7 @@ int main() {
 			int _to = graph[next][i].second;
 			if (table[_to] > d + _val) {
 				table[_to] = d + _val;
-        pq.push({ -(d + _val),_to });
+				pq.push({ -(d + _val),_to });
 			}
 		}
 	}
