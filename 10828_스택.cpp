@@ -1,66 +1,23 @@
-#include<iostream>
+#include <stdio.h>
 using namespace std;
-class stack {
-	int arr[1000] = { 0 };
-	int index = -1;
-public:
-	void push(int a);
-	void pop();
-	void size();
-	void empty();
-	void top();
-};
-
-void stack::push(int a) {
-	index++;
-	arr[index] = a;
-}
-void stack::pop() {
-	int tmp = 0;
-
-	if (index == -1)cout << "-1" << endl;
-	else if (index < -1) {
-		index == -1;
-		cout << "더이상pop 할수 없습니다" << endl;
-	}
-	else {
-		tmp = arr[index];
-		arr[index] = 0;
-		index--;
-		cout << tmp << endl;
-	}
-}
-
-void stack::size() {
-	cout << index + 1 << endl;
-}
-void stack::empty() {
-	if (index == -1) cout << "1" << endl;
-	else cout << "0" << endl;
-}
-void stack::top() {
-	if (index == -1) cout << "-1" << endl;
-	else cout << arr[index] << endl;
-}
 
 int main() {
-	int num, order_num;
-	string order;
-	stack st;
 
-	cin >> num;
+	int st[10001] = { 0, };
+	int index = -1;
 
-	for (int i = 0; i < num; i++) {
-		cin >> order;
-		if (order == "push") {
-			cin >> order_num;
-			st.push(order_num);
-		}
-		if (order == "pop") st.pop();
-		if (order == "size") st.size();
-		if (order == "empty") st.empty();
-		if (order == "top") st.top();
+	int n;
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++) {
+		char cmd[6];
+		scanf("%s", cmd);
+
+		if (cmd[0] == 'p' && cmd[1] == 'u') scanf("%d", &st[++index]);
+		else if (cmd[0] == 't') printf("%d\n", index < 0 ? -1 : st[index]);
+		else if (cmd[0] == 'p') printf("%d\n", index < 0 ? -1 : st[index--]);
+		else if (cmd[0] == 's') printf("%d\n", index + 1);
+		else printf("%d\n", index < 0 ? 1 : 0);
 	}
-
 	return 0;
 }
