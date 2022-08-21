@@ -27,12 +27,10 @@ int main() {
 	}
 
 	while (T--) {
-
 		vector<vector<int>> after(R, vector<int>(C));
 		for (int i = 0; i < R; i++) {
 			for (int j = 0; j < C; j++) {
 				if (room[i][j] > 0) {
-					//printf("%d %d\n", i, j);
 					int cnt = 0;
 					for (int k = 0; k < 4; k++) {
 						int x = i + dx[k];
@@ -47,58 +45,33 @@ int main() {
 			}
 		}
 		room = after;
-		for (int i = 0; i < R; i++) {
-			for (int j = 0; j < C; j++) {
-				printf("%d ", room[i][j]);
-			}
-			printf("\n");
-		}
+		for (int i = 0; i < 2; i++) {
+			int index = 0, beforeVal = 0;
+			int ac_x = airCleaner[i].first;
+			int ac_y = airCleaner[i].second;
 
-		int index1 = 0, index2 = 0, beforeVal1 = 0, beforeVal2 = 0;
-		int ac_x1 = airCleaner[0].first;
-		int ac_y1 = airCleaner[0].second;
-		int ac_x2 = airCleaner[1].first;
-		int ac_y2 = airCleaner[1].second;
-		//printf("ac1 --- %d %d\n", ac_x1, ac_y1);
-		//printf("ac2 --- %d %d\n", ac_x2, ac_y2);
-		do {
-			room[ac_x1][ac_y1] = beforeVal1;
-			room[ac_x2][ac_y2] = beforeVal2;
+			do {
+				ac_x += dx[index];
+				ac_y += dy[index];
+				if (ac_x < 0 || ac_x >= R || ac_y < 0 || ac_y >= C) {
+					ac_x -= dx[index];
+					ac_y -= dy[index];
 
-			ac_x1 += dx[index1];
-			ac_y1 += dy[index1];
-			//printf("1 --- %d %d\n", ac_x1, ac_y1);
-
-			ac_x2 += dx[index2];
-			ac_y2 += dy[index2];
-			//printf("2 --- %d %d\n", ac_x2, ac_y2);
-			if (ac_x1 < 0 || ac_x1 >= R || ac_y1 < 0 || ac_y1 >= C) {
-				printf("dddd\n");
-				ac_x1 -= dx[index1];
-				ac_y1 -= dy[index1];
-
-				ac_x2 -= dx[index2];
-				ac_y2 -= dy[index2];
-
-				index2 = ++index1;
-				if (index1 == 1)index2 = 3;
-				if (index1 == 3)index2 = 1;
-
-				continue;
-			}
-
-			beforeVal1 = room[ac_x1][ac_y1];
-			beforeVal2 = room[ac_x2][ac_y2];
-		} while (!isAirCleaner(ac_x1, ac_y1));
-
-		for (int i = 0; i < R; i++) {
-			for (int j = 0; j < C; j++) {
-				printf("%d ", room[i][j]);
-			}
-			printf("\n");
-		}
-
+					++index;
+					if (i == 1)index = (index + 2) % 4;
+			
+					continue;
+				}
+			/*	int tmp = room[ac_x][ac_y];
+				room[ac_x][ac_y] = beforeVal;
+				beforeVal = tmp; */
+				swap(room[ac_x][ac_y], beforeVal);
+			} while (!isAirCleaner(ac_x, ac_y));
+			
+			room[ac_x][ac_y] = 0;
+		}		
 	}
+
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
 			result += room[i][j];
