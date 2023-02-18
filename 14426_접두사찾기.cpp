@@ -30,13 +30,21 @@ int main() {
 
 	int cnt = 0, idx = 0;
 	for (int i = 0; i < m; i++) {
+		bool flag = false;
 		for (int j = idx; j < n; j++) {
 			if (strs[j].substr(0, prefixes[i].length()) == prefixes[i]) {
 				cnt++;
 				idx = j;
+				flag = true;
+				break;
+			}
+			if (strs[j] > prefixes[i]) {
+				idx = j;
+				flag = true;
 				break;
 			}
 		}
+		if (!flag)break;
 	}
 	cout << cnt;
 	return 0;
