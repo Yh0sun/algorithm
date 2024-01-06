@@ -2,14 +2,15 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class LockAndKey {
-    public static void main(String[] args) {
-
-    }
+    static int[][] inputKey, inputLock;
     static int[][] tempKey;
+
     public boolean solution(int[][] key, int[][] lock) {
-        boolean answer = true;
         int grooveMinX = 100, grooveMaxX = -1;
         int grooveMinY = 100, grooveMaxY = -1;
+        inputLock = lock.clone();
+        inputKey = key.clone();
+        tempKey = key.clone();
 
         for (int i = 0; i < lock.length; i++) {
             for (int j = 0; j < lock[i].length; j++) {
@@ -21,58 +22,51 @@ public class LockAndKey {
                 }
             }
         }
-
+        if (grooveMinX == 100) return true;
         if (grooveMaxX - grooveMinX + 1 > key.length || grooveMaxY - grooveMinY + 1 > key.length) return false;
 
-        int[][] startSpot = {
-                {grooveMinX, grooveMinY},
-                {grooveMinX, grooveMaxY - key.length},
-                {grooveMaxX - key.length, grooveMinY},
-                {grooveMaxX - key.length, grooveMaxY - key.length}
-        };
-
-        tempKey = key.clone();
+        int startX = grooveMaxX - key.length + 1, endX = grooveMinX + 1;
+        int startY = grooveMaxY - key.length + 1, endY = grooveMinY + 1;
 
         for (int r = 0; r < 4; r++) {
             rotate();
-
-            for (int sx = startSpot[3][0]; sx <= startSpot[0][0]; sx++) {
-                for (int sy = startSpot[3][1]; sy <= startSpot[0][1]; sy++) {
-                    boolean flag = true;
-                    for (int x = 0; x < key.length; x++) {
-                        for (int y = 0; y < key.length; y++) {
-                            int cx = sx + x;
-                            int cy = sy + y;
-                            if (cx < 0 || cx >= lock.length || cy < 0 || cy >= lock.length) continue;
-                            if (lock[cx][cy] == key[x][y]) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (!flag) break;
-                    }
-                    if (flag) return true;
+            for (int sx = startX; sx < endX; sx++) {
+                for (int sy = startY; sy < endY; sy++) {
+                    if (isCorrectKey(sx, sy)) return true;
                 }
             }
         }
         return false;
     }
+
     public void rotate() {
         int N = tempKey.length / 2;
         Queue<Integer> que = new LinkedList<>();
 
         for (int n = 0; n < N; n++) {
             for (int i = n; i < tempKey.length - n - 1; i++) que.add(tempKey[n][i]);
-            for (int i = n; i < N - n - 1; i++) que.add(tempKey[i][tempKey.length - n - 1]);
+            for (int i = n; i < tempKey.length - n - 1; i++) que.add(tempKey[i][tempKey.length - n - 1]);
             for (int i = tempKey.length - n - 1; i > n; i--) que.add(tempKey[tempKey.length - n - 1][i]);
             for (int i = tempKey.length - n - 1; i > n; i--) que.add(tempKey[i][n]);
 
             for (int i = n; i < tempKey.length - n - 1; i++) que.add(que.poll());
 
             for (int i = n; i < tempKey.length - n - 1; i++) tempKey[n][i] = que.poll();
-            for (int i = n; i < N - n - 1; i++) tempKey[i][tempKey.length - n - 1] = que.poll();
+            for (int i = n; i < tempKey.length - n - 1; i++) tempKey[i][tempKey.length - n - 1] = que.poll();
             for (int i = tempKey.length - n - 1; i > n; i--) tempKey[tempKey.length - n - 1][i] = que.poll();
             for (int i = tempKey.length - n - 1; i > n; i--) tempKey[i][n] = que.poll();
         }
+    }
+
+    public boolean isCorrectKey(int sx, int sy) {
+        for (int x = 0; x < inputKey.length; x++) {
+            for (int y = 0; y < inputKey.length; y++) {
+                int cx = sx + x;
+                int cy = sy + y;
+                if (cx < 0 || cx >= inputLock.length || cy < 0 || cy >= inputLock.length) continue;
+                if (inputLock[cx][cy] == inputKey[x][y]) return false;
+            }
+        }
+        return true;
     }
 }
