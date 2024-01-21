@@ -29,13 +29,12 @@ public class JewelThief {
         Collections.sort(bags);
 
         int idxJewel = 0;
-        for (int i = 0; i < bagNum; i++) {
-            int j = idxJewel;
-            for (; j < jewelNum; j++) {
-                if (bags.get(i) < jewels.get(j).getWeight()) break;
-                pq.add(jewels.get(j).getPrice());
+        for (int bag : bags) {
+            while (idxJewel < jewelNum) {
+                if (bag < jewels.get(idxJewel).getWeight()) break;
+                pq.add(jewels.get(idxJewel).getPrice());
+                idxJewel++;
             }
-            idxJewel = j;
             if (!pq.isEmpty()) ans += pq.poll();
         }
         System.out.println(ans);

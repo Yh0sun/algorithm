@@ -7,12 +7,12 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class SafeZone {
-    int[] dx = {0, 1, 0, -1};
-    int[] dy = {1, 0, -1, 0};
+    final int[] dx = {0, 1, 0, -1};
+    final int[] dy = {1, 0, -1, 0};
     int N, maxH = -1, waterHeight = 1;
     ArrayList<ArrayList<Integer>> map = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         SafeZone safeZone = new SafeZone();
         safeZone.input();
         System.out.println(safeZone.solution());
@@ -56,7 +56,9 @@ public class SafeZone {
             }
         }
         return safeZoneNum;
+
     }
+
 
     public void bfs(boolean[][] visited, int x, int y) {
         Queue<Pos> que = new LinkedList<>();
